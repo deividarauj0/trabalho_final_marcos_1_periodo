@@ -1,5 +1,5 @@
 from clientes import menu_clientes, carregar_clientes, salvar_clientes
-from livros import menu_livros
+from livros import menu_livros, carregar_livros, salvar_livros
 #from emprestimos import emprestimos_livros#
 from utils import limpar_tela
 
@@ -19,7 +19,7 @@ def menu():
                 limpar_tela()
                 break
 
-
+livros = carregar_livros()
 clientes = carregar_clientes()
 menu()
 salvar_clientes()

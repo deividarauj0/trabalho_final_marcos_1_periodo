@@ -1,14 +1,30 @@
 import json
 from utils import ler_arquivo, escrever_arquivo, limpar_tela
 
-livros = []
+livros = {}
 codigo_livro = 0
+
+def carregar_livros():
+    global livros, codigo_livro
+    try:
+        with open('livros.json', 'r') as arquivo:
+            livros = json.load(arquivo)
+            if livros:
+                codigo_livro = max(map(int, livros.keys()))
+            else:
+                codigo_livro = 0
+    except FileNotFoundError:
+        livros = {}
+
+def salvar_livros():
+    with open('livros.json', 'w') as arquivo:
+        json.dump(livros, arquivo)
 
 def menu_livros():
     limpar_tela()
     while True:
         print("Escolha uma opção: ")
-        opcao = input(f"1-Cadastrar livro\n2-Pesquisar livro\n3-Listar livros\n4-Voltar\n\n")
+        opcao = input("1-Cadastrar livro\n2-Pesquisar livro\n3-Listar livros\n4-Voltar\n\n")
         match opcao:
             case "1":
                 cadastrar_livros()
@@ -20,43 +36,71 @@ def menu_livros():
                 break
 
 def cadastrar_livros():
+    global codigo_livro
     limpar_tela()
-    codigo_livro = codigo_livro + 1
-    if codigo_livro in livros:
+    codigo_livro += 1
+    if str(codigo_livro) in livros:
         print(f"Código já cadastrado.")
     else:
-        titulo_livro = input(f"Título: ")
-        autor_livro = input(f"Autor(es): ")
-        isbn = input(f"ISBN: ")
-        data_publicacao = input(f"Data de publicação: ")
-        editora_livro = input(f"Editora: ")
-        numero_de_paginas_livro = input(f"Quantidade de páginas: ")
-        genero_livro = input(f"Gênero: ")
-        idioma_livro = input(f"Idioma: ")
+        titulo_livro = input("Título: ")
+        autor_livro = input("Autor(es): ")
+        isbn = input("ISBN: ")
+        data_publicacao = input("Data de publicação: ")
+        data_publicacao_formatada = f"{data_publicacao[:2]}/{data_publicacao[2:4]}/{data_publicacao[4:]}"
+        editora_livro = input("Editora: ")
+        numero_de_paginas_livro = input("Quantidade de páginas: ")
+        genero_livro = input("Gênero: ")
+        idioma_livro = input("Idioma: ")
 
-        livros[codigo_livro] = {
-            "titulo_livro" : titulo_livro,
-            "autor_livro" : autor_livro,
-            "isbn" : isbn,
-            "data_publicacao" : data_publicacao,
-            "editora_livro" : editora_livro,
-            "numero_de_paginas_livro" : numero_de_paginas_livro,
-            "genero_livro" : genero_livro,
-            "idioma_livro" : idioma_livro
+        livros[str(codigo_livro)] = {
+            "titulo_livro": titulo_livro,
+            "autor_livro": autor_livro,
+            "isbn": isbn,
+            "data_publicacao_formatada": data_publicacao_formatada,
+            "editora_livro": editora_livro,
+            "numero_de_paginas_livro": numero_de_paginas_livro,
+            "genero_livro": genero_livro,
+            "idioma_livro": idioma_livro
         }
+        limpar_tela()
+        if salvar_livros():
+            print("Livro cadastrado com sucesso!\n\n")
 
-def pesquisar_livro():
+def pesquisar_livros():
     limpar_tela()
-    pesquisar_cpf = input(f"Informe o CPF do cliente: ")
-    cliente = clientes.get(cpf)
-    if cliente:
-        print(f"Cliente encontrado: Nome: {cliente['nome_completo']}, Data de Nascimento: {cliente['data_de_nascimento']}, Endereço: {cliente['endereco']}, Telefone: {cliente['telefone']}, Email: {cliente['email']}, Data de Cadastro: {cliente['data_cadastro']}")
-        return None
+    codigo = input("Informe o código do livro: ")
+    if codigo in livros:
+        livro = livros[codigo]
+        print(f"\n\nTítulo: {livro['titulo_livro']}")
+        print(f"Autor(es): {livro['autor_livro']}")
+        print(f"ISBN: {livro['isbn']}")
+        print(f"Data de publicação: {livro['data_publicacao_formatada']}")
+        print(f"Editora: {livro['editora_livro']}")
+        print(f"Quantidade de páginas: {livro['numero_de_paginas_livro']}")
+        print(f"Gênero: {livro['genero_livro']}")
+        print(f"Idioma: {livro['idioma_livro']}")
     else:
-        print("Cliente não encontrado.")
-        return None
+        print("Livro não encontrado.\n\n")
+
+    input("\n\nAperte qualquer tecla para voltar.")
+    limpar_tela()
 
 def listar_livros():
     limpar_tela()
-    for livro in livros:
-        print(livro)
+    if not livros:
+        print("Nenhum livro cadastrado.\n\n")
+    else:
+        for codigo_livro, dados in livros.items():
+            print(f"Código: {codigo_livro}")
+            print(f"Título: {dados['titulo_livro']}")
+            print(f"Autor(es): {dados['autor_livro']}")
+            print(f"ISBN: {dados['isbn']}")
+            print(f"Data de publicação: {dados['data_publicacao_formatada']}")
+            print(f"Editora: {dados['editora_livro']}")
+            print(f"Quantidade de páginas: {dados['numero_de_paginas_livro']}")
+            print(f"Gênero: {dados['genero_livro']}")
+            print(f"Idioma: {dados['idioma_livro']}")
+            print("\n")
+
+    input("Aperte qualquer tecla para voltar.")
+    limpar_tela()

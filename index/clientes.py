@@ -1,19 +1,17 @@
 import json
-import os
 from utils import ler_arquivo, escrever_arquivo, limpar_tela, data_atual, validar_cpf
 
-caminho_arquivo_clientes = os.path.join('dados_json', 'clientes.json')
 clientes = {}
 
 def carregar_clientes():
     try:
-        with open(caminho_arquivo_clientes, 'r') as arquivo:
+        with open('clientes.json', 'r') as arquivo:
             return json.load(arquivo)
     except FileNotFoundError:
         return {}
 
 def salvar_clientes():
-    with open(caminho_arquivo_clientes, 'w') as arquivo:
+    with open('clientes.json', 'w') as arquivo:
         json.dump(clientes, arquivo)
 
 def menu_clientes():
@@ -42,7 +40,10 @@ def cadastrar_clientes():
         return
 
     if cpf in clientes:
+        limpar_tela()
         print(f"CPF já cadastrado.")
+        input("\n\nAperte ENTER para voltar.")
+        limpar_tela()
         return
 
     
@@ -65,8 +66,7 @@ def cadastrar_clientes():
     }
 
     limpar_tela()
-    if salvar_clientes():
-        print("Cliente cadastrado com sucesso!\n\n")
+    print("Cliente cadastrado com sucesso!\n\n")
 
 def pesquisar_cliente():
     limpar_tela()
@@ -102,5 +102,5 @@ def listar_clientes():
             print(f"Email: {dados['email']}")
             print(f"Data de Cadastro: {dados['data_cadastro']}\n")
 
-    input("\n\nAperte qualquer tecla para voltar.")
+    input("\n\nAperte ENTER para voltar.")
     limpar_tela()
