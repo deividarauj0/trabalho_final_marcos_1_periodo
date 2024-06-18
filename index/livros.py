@@ -7,22 +7,24 @@ codigo_livro = 0
 def carregar_livros():
     global livros, codigo_livro
     try:
-        with open('livros.json', 'r') as arquivo:
-            livros = json.load(arquivo)
-            if livros:
-                codigo_livro = max(map(int, livros.keys()))
-            else:
-                codigo_livro = 0
+        livros = ler_arquivo('livros.json')
+        if livros and isinstance(livros, dict):
+            codigo_livro = max(map(int, livros.keys()))
+        else:
+            livros = {}
+            codigo_livro = 0
     except FileNotFoundError:
+        livros = {}
+    except json.JSONDecodeError:
+        print("Erro ao decodificar o arquivo JSON.")
         livros = {}
 
 def salvar_livros():
-    with open('livros.json', 'w') as arquivo:
-        json.dump(livros, arquivo)
+    escrever_arquivo('livros.json', livros)
 
 def menu_livros():
-    limpar_tela()
     while True:
+        limpar_tela()
         print("Escolha uma opção: ")
         opcao = input("1-Cadastrar livro\n2-Pesquisar livro\n3-Listar livros\n4-Voltar\n\n")
         match opcao:
@@ -34,25 +36,36 @@ def menu_livros():
                 listar_livros()
             case "4":
                 break
+            case _:
+                print("Opção inválida. Tente novamente.")
 
 def cadastrar_livros():
     global codigo_livro
     limpar_tela()
     codigo_livro += 1
-    if str(codigo_livro) in livros:
+    str_codigo_livro = str(codigo_livro)
+    if str_codigo_livro in livros:
         print(f"Código já cadastrado.")
     else:
         titulo_livro = input("Título: ")
         autor_livro = input("Autor(es): ")
         isbn = input("ISBN: ")
-        data_publicacao = input("Data de publicação: ")
-        data_publicacao_formatada = f"{data_publicacao[:2]}/{data_publicacao[2:4]}/{data_publicacao[4:]}"
+        data_publicacao = input("Data de publicação (DDMMAAAA): ")
+
+        if len(data_publicacao) == 8 and data_publicacao.isdigit():
+            data_publicacao_formatada = f"{data_publicacao[:2]}/{data_publicacao[2:4]}/{data_publicacao[4:]}"
+        else:
+            limpar_tela()
+            print("Data de publicação inválida. Use o formato DDMMAAAA.")
+            input("\n\nAperte ENTER para voltar.")
+            return
+
         editora_livro = input("Editora: ")
         numero_de_paginas_livro = input("Quantidade de páginas: ")
         genero_livro = input("Gênero: ")
         idioma_livro = input("Idioma: ")
 
-        livros[str(codigo_livro)] = {
+        livros[str_codigo_livro] = {
             "titulo_livro": titulo_livro,
             "autor_livro": autor_livro,
             "isbn": isbn,
@@ -62,9 +75,9 @@ def cadastrar_livros():
             "genero_livro": genero_livro,
             "idioma_livro": idioma_livro
         }
-        limpar_tela()
-        if salvar_livros():
-            print("Livro cadastrado com sucesso!\n\n")
+
+        salvar_livros()
+        print("Livro cadastrado com sucesso!\n\n")
 
 def pesquisar_livros():
     limpar_tela()
@@ -82,7 +95,7 @@ def pesquisar_livros():
     else:
         print("Livro não encontrado.\n\n")
 
-    input("\n\nAperte qualquer tecla para voltar.")
+    input("\n\nAperte ENTER para voltar.")
     limpar_tela()
 
 def listar_livros():
@@ -102,5 +115,5 @@ def listar_livros():
             print(f"Idioma: {dados['idioma_livro']}")
             print("\n")
 
-    input("Aperte qualquer tecla para voltar.")
+    input("\n\nAperte ENTER para voltar.")
     limpar_tela()

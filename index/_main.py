@@ -19,7 +19,10 @@ def menu():
                 limpar_tela()
                 break
 
-livros = carregar_livros()
-clientes = carregar_clientes()
+carregar_clientes()
+carregar_livros()
+
 menu()
+
 salvar_clientes()
+salvar_livros()

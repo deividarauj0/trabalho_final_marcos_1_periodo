@@ -4,21 +4,23 @@ from utils import ler_arquivo, escrever_arquivo, limpar_tela, data_atual, valida
 clientes = {}
 
 def carregar_clientes():
+    global clientes
     try:
         with open('clientes.json', 'r') as arquivo:
-            return json.load(arquivo)
+            clientes = json.load(arquivo)
+            if not isinstance(clientes, dict):
+                clientes = {}
     except FileNotFoundError:
-        return {}
+        clientes = {}
 
 def salvar_clientes():
-    with open('clientes.json', 'w') as arquivo:
-        json.dump(clientes, arquivo)
+    escrever_arquivo('clientes.json', clientes)
 
 def menu_clientes():
-    limpar_tela()
     while True:
+        limpar_tela()
         print("Escolha uma opção: ")
-        opcao = input(f"1-Cadastrar cliente\n2-Pesquisar cliente\n3-Listar clientes\n4-Voltar\n\n")
+        opcao = input("1-Cadastrar cliente\n2-Pesquisar cliente\n3-Listar clientes\n4-Voltar\n\n")
         match opcao:
             case "1":
                 cadastrar_clientes()
@@ -27,54 +29,76 @@ def menu_clientes():
             case "3":
                 listar_clientes()
             case "4":
+                salvar_clientes()
                 break
-
 
 def cadastrar_clientes():
     limpar_tela()
-    cpf = input(f"CPF: ")
+    cpf = input("CPF: ")
 
     if not validar_cpf(cpf):
         limpar_tela()
-        print(f"CPF inválido. Tente novamente.\n\n")
+        print("CPF inválido. Tente novamente.\n\n")
+        input("Aperte ENTER para voltar.")
+        limpar_tela()
         return
 
     if cpf in clientes:
         limpar_tela()
-        print(f"CPF já cadastrado.")
+        print("CPF já cadastrado.")
         input("\n\nAperte ENTER para voltar.")
         limpar_tela()
         return
-
     
-    nome_completo = input(f"Nome completo: ")
-    data_de_nascimento = input(f"Data de nascimento: ")
-    data_nascimento_formatada = f"{data_de_nascimento[:2]}/{data_de_nascimento[2:4]}/{data_de_nascimento[4:]}"
-    endereco = input(f"Endereço: ")
-    telefone = input(f"Telefone: ")
-    telefone_formatado = f"({telefone[:2]}) {telefone[2:7]}-{telefone[7:]}"
-    email = input(f"Email: ")
+    nome_completo = input("Nome completo: ")
+    data_de_nascimento = input("Data de nascimento (DDMMAAAA): ")
+
+    if len(data_de_nascimento) == 8 and data_de_nascimento.isdigit():
+        data_nascimento_formatada = f"{data_de_nascimento[:2]}/{data_de_nascimento[2:4]}/{data_de_nascimento[4:]}"
+    else:
+        limpar_tela()
+        print("Data de nascimento inválida. Use o formato DDMMAAAA.")
+        input("\n\nAperte ENTER para voltar.")
+        limpar_tela()
+        return
+    
+    endereco = input("Endereço: ")
+    telefone = input("Telefone (com DDD): ")
+
+    if len(telefone) == 11 and telefone.isdigit():
+        telefone_formatado = f"({telefone[:2]}) {telefone[2:7]}-{telefone[7:]}"
+    else:
+        limpar_tela()
+        print("Telefone inválido. Use o formato correto com 11 dígitos.")
+        input("\n\nAperte ENTER para voltar.")
+        limpar_tela()
+        return
+    
+    email = input("Email: ")
     data_cadastro = data_atual()
 
     clientes[cpf] = {
-        "nome_completo" : nome_completo,
-        "data_nascimento_formatada" : data_nascimento_formatada,
-        "endereco" : endereco,
-        "telefone_formatado" : telefone_formatado,
-        "email" : email,
-        "data_cadastro" : data_cadastro
+        "nome_completo": nome_completo,
+        "data_nascimento_formatada": data_nascimento_formatada,
+        "endereco": endereco,
+        "telefone_formatado": telefone_formatado,
+        "email": email,
+        "data_cadastro": data_cadastro
     }
 
+    salvar_clientes()
     limpar_tela()
     print("Cliente cadastrado com sucesso!\n\n")
+    input("\n\nAperte ENTER para voltar.")
+    limpar_tela()
 
 def pesquisar_cliente():
     limpar_tela()
-    pesquisar_cpf = input(f"Informe o CPF do cliente: ")
+    pesquisar_cpf = input("Informe o CPF do cliente: ")
     cliente = clientes.get(pesquisar_cpf)
     if cliente:
         limpar_tela()
-        print(f"Cliente encontrado:\n\n")
+        print("Cliente encontrado:\n\n")
         print(f"Nome: {cliente['nome_completo']}")
         print(f"Data de Nascimento: {cliente['data_nascimento_formatada']}")
         print(f"Endereço: {cliente['endereco']}")

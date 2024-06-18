@@ -8,7 +8,7 @@ def ler_arquivo(nome_arquivo):
         with open(nome_arquivo, 'r') as arquivo:
             return json.load(arquivo)
     except FileNotFoundError:
-        return []
+        return {}
     
 def escrever_arquivo(nome_arquivo, dados):
     with open(nome_arquivo, 'w') as arquivo:
@@ -21,7 +21,7 @@ def limpar_tela():
         os.system('clear')
 
 def data_atual():
-    return datetime.now().strftime(f"%d-%m-%Y")
+    return datetime.now().strftime("%d/%m/%Y")
 
 def validar_cpf(cpf):
     cpf = re.sub(r'\D', '', cpf)
