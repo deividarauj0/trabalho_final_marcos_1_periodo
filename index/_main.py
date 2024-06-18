@@ -1,6 +1,6 @@
 from clientes import menu_clientes, carregar_clientes, salvar_clientes
 from livros import menu_livros, carregar_livros, salvar_livros
-#from emprestimos import emprestimos_livros#
+from emprestimos import menu_emprestimos, carregar_emprestimos, salvar_emprestimos
 from utils import limpar_tela
 
 def menu():
@@ -14,7 +14,7 @@ def menu():
             case "2":
                 menu_livros()
             case "3":
-                emprestimos_livros()
+                menu_emprestimos()
             case "4":
                 limpar_tela()
                 break

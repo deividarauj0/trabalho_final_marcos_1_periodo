@@ -12,6 +12,7 @@ def carregar_clientes():
                 clientes = {}
     except FileNotFoundError:
         clientes = {}
+    return clientes
 
 def salvar_clientes():
     escrever_arquivo('clientes.json', clientes)

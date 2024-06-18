@@ -18,6 +18,8 @@ def carregar_livros():
     except json.JSONDecodeError:
         print("Erro ao decodificar o arquivo JSON.")
         livros = {}
+        
+    return livros
 
 def salvar_livros():
     escrever_arquivo('livros.json', livros)
@@ -115,5 +117,5 @@ def listar_livros():
             print(f"Idioma: {dados['idioma_livro']}")
             print("\n")
 
-    input("\n\nAperte ENTER para voltar.")
+    input("\nAperte ENTER para voltar.")
     limpar_tela()

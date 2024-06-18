@@ -1,0 +1,12 @@
+{
+    "1": {
+        "titulo_livro": "1",
+        "autor_livro": "1",
+        "isbn": "1",
+        "data_publicacao_formatada": "07/04/2002",
+        "editora_livro": "1",
+        "numero_de_paginas_livro": "1",
+        "genero_livro": "1",
+        "idioma_livro": "1"
+    }
+}
