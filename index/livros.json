@@ -1,0 +1,12 @@
+{
+    "1": {
+        "titulo_livro": "A bela e a fera",
+        "autor_livro": "Penelope From Dickson",
+        "isbn": "887",
+        "data_publicacao_formatada": "07/08/1968",
+        "editora_livro": "Kanasibiou",
+        "numero_de_paginas_livro": "689",
+        "genero_livro": "Literatura",
+        "idioma_livro": "EN"
+    }
+}

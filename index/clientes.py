@@ -6,7 +6,7 @@ clientes = {}
 def carregar_clientes():
     global clientes
     try:
-        with open('clientes.json', 'r') as arquivo:
+        with open('../dados_json/clientes.json', 'r') as arquivo:
             clientes = json.load(arquivo)
             if not isinstance(clientes, dict):
                 clientes = {}
@@ -15,7 +15,7 @@ def carregar_clientes():
     return clientes
 
 def salvar_clientes():
-    escrever_arquivo('clientes.json', clientes)
+    escrever_arquivo('../dados_json/clientes.json', clientes)
 
 def menu_clientes():
     while True:
